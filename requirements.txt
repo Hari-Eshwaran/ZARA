@@ -1,0 +1,12 @@
+google-generativeai
+pyttsx3
+SpeechRecognition
+pyaudio
+Pillow
+spotipy
+requests
+streamlit
+streamlit-webrtc
+streamlit-autorefresh
+mediapipe
+opencv-python
