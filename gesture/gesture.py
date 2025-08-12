@@ -37,7 +37,7 @@ def start_gesture():
     }
 
     # Webcam
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture("http://192.168.29.164:81/stream")
 
     while True:
         ret, frame = cap.read()

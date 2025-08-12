@@ -185,8 +185,28 @@ def handle_gesture_request():
 
 def handle_translator_request():
     """Handle translator request"""
-    st.session_state.current_mode = "Translator"
-    st.info("🌍 Translator mode activated. Use voice input for Tamil to Hindi translation.")
+    st.session_state.current_mode = "Multi-Language Translator"
+    st.info("🌍 Multi-language translator activated. Supports Tamil, Telugu, Hindi & English translations.")
+    
+    # Language selection interface
+    st.markdown("#### Select Translation Language Pair:")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        source_lang = st.selectbox("From:", ["Tamil", "Telugu", "Hindi", "English"], key="source_lang")
+    with col2:
+        target_lang = st.selectbox("To:", ["Hindi", "English", "Tamil", "Telugu"], key="target_lang")
+    
+    if st.button("Start Translation", key="start_translation"):
+        st.success(f"🌍 {source_lang} ➡️ {target_lang} translation mode activated!")
+        st.info("Use voice input to start translating or type your text below.")
+        
+        text_to_translate = st.text_area("Or type text to translate:", key="translate_text")
+        if st.button("Translate Text", key="translate_button") and text_to_translate:
+            # This would call the translation function
+            st.success(f"Translating: {text_to_translate}")
+            # result = translate_text(text_to_translate, source_lang.lower(), target_lang.lower())
+            # st.write(f"Translation: {result}")
 
 def handle_gif_request():
     """Handle GIF display request"""
@@ -393,7 +413,7 @@ with col3:
         "Spotify": "⚠️ Web Only",
         "GIF Display": "✅ Ready",
         "Gesture Recognition": "📁 File Based",
-        "Tamil-Hindi Translator": "✅ Ready"
+        "Multi-Language Translator": "🌍 Tamil, Telugu, Hindi, English"
     }
     
     for feature, status in features.items():

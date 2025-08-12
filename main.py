@@ -309,16 +309,74 @@ def open_gesture_window():
         log_conversation("Assistant", "கை சைகை முறை செயல்படவில்லை.")
         print(f"[ERROR] Failed to open gesture window: {e}")
 
-# Tamil to Hindi translation loop
-def tamil_to_hindi_loop():
-    speak("தமிழில் பேசுங்கள். ஹிந்தியில் மொழிபெயர்க்கப்படுகிறது. நிறுத்த 'niruthu' அல்லது 'stop' என்று சொல்லுங்கள்.")
-    log_conversation("Assistant", "தமிழில் பேசுங்கள். ஹிந்தியில் மொழிபெயர்க்கப்படுகிறது. நிறுத்த 'niruthu' அல்லது 'stop' என்று சொல்லுங்கள்.")
-    print("🟢 Tamil ➡️ Hindi translator running. Say something in Tamil.")
+# Multi-language translation loop with language selection
+def translation_loop():
+    # Language selection
+    speak("மொழிபெயர்ப்பு தேர்வு: தமிழ் to ஹிந்தி, தமிழ் to இங்கிலீஷ், தெலுங்கு to ஹிந்தி, தெலுங்கு to இங்கிலீஷ், ஹிந்தி to இங்கிலீஷ், அல்லது இங்கிலீஷ் to ஹிந்தி எதை விரும்புகிறீர்கள்?")
+    print("🌍 Select translation language pair:")
+    print("1. Tamil ➡️ Hindi")
+    print("2. Tamil ➡️ English") 
+    print("3. Telugu ➡️ Hindi")
+    print("4. Telugu ➡️ English")
+    print("5. Hindi ➡️ English")
+    print("6. English ➡️ Hindi")
+    
+    while True:
+        try:
+            selection = recognize_speech().lower()
+            log_conversation("User", f"Language selection: {selection}")
+            
+            # Parse language selection
+            if any(word in selection for word in ["tamil hindi", "tamil to hindi", "one", "1", "தமிழ் ஹிந்தி"]):
+                source_lang = "tamil"
+                target_lang = "hindi"
+                break
+            elif any(word in selection for word in ["tamil english", "tamil to english", "two", "2", "தமிழ் இங்கிலீஷ்"]):
+                source_lang = "tamil"
+                target_lang = "english"
+                break
+            elif any(word in selection for word in ["telugu hindi", "telugu to hindi", "three", "3", "தெலுங்கு ஹிந்தி"]):
+                source_lang = "telugu"
+                target_lang = "hindi"
+                break
+            elif any(word in selection for word in ["telugu english", "telugu to english", "four", "4", "தெலுங்கு இங்கிலீஷ்"]):
+                source_lang = "telugu"
+                target_lang = "english"
+                break
+            elif any(word in selection for word in ["hindi english", "hindi to english", "five", "5", "ஹிந்தி இங்கிலீஷ்"]):
+                source_lang = "hindi"
+                target_lang = "english"
+                break
+            elif any(word in selection for word in ["english hindi", "english to hindi", "six", "6", "இங்கிலீஷ் ஹிந்தி"]):
+                source_lang = "english"
+                target_lang = "hindi"
+                break
+            else:
+                speak("தெளிவான தேர்வு சொல்லுங்கள். எண்ணையும் சொல்லலாம்.")
+                print("❌ Invalid selection. Please choose 1-6 or say the language pair clearly.")
+                continue
+                
+        except Exception as e:
+            speak("தேர்வு புரிந்துகொள்ள முடியவில்லை. மீண்டும் சொல்லுங்கள்.")
+            print(f"❌ Could not understand selection: {e}")
+            continue
+    
+    # Confirm selection
+    selection_msg = f"{source_lang.title()} ➡️ {target_lang.title()} மொழிபெயர்ப்பு தேர்ந்தெடுக்கப்பட்டது."
+    speak(selection_msg)
+    log_conversation("Assistant", selection_msg)
+    print(f"✅ Selected: {source_lang.title()} ➡️ {target_lang.title()}")
+    
+    # Start translation loop
+    speak(f"{source_lang.title()} மொழியில் பேசுங்கள். {target_lang.title()} மொழியில் மொழிபெயர்க்கப்படுகிறது. நிறுத்த 'stop' என்று சொல்லுங்கள்.")
+    log_conversation("Assistant", f"{source_lang.title()} ➡️ {target_lang.title()} translator started")
+    print(f"🟢 {source_lang.title()} ➡️ {target_lang.title()} translator running. Say something in {source_lang.title()}.")
+    
     while True:
         input_text = recognize_speech()
         log_conversation("User", input_text)
 
-        if input_text.lower() in ["niruthu", "stop", "exit","நிறுத்து", "நிற்கவும்", "வெளியேறு", "வெளியே"]:
+        if input_text.lower() in ["stop", "exit", "niruthu", "நிறுத்து", "நிற்கவும்", "வெளியேறு", "వెలుయే", "रुको", "बंद करो"]:
             speak("மொழிபெயர்ப்பு நிறுத்தப்பட்டது.")
             log_conversation("Assistant", "மொழிபெயர்ப்பு நிறுத்தப்பட்டது.")
             print("🛑 Exiting translator.")
@@ -327,11 +385,47 @@ def tamil_to_hindi_loop():
         if input_text.strip() == "":
             continue
 
-        print(f"🗣️ Tamil: {input_text}")
-        hindi_output = translate_tamil_to_hindi(input_text)
-        print(f"📝 Hindi: {hindi_output}")
-        log_conversation("Assistant", hindi_output)
-        speak_text(hindi_output)
+        print(f"🗣️ {source_lang.title()}: {input_text}")
+        
+        # Use existing translation function or extend for other languages
+        if source_lang == "tamil" and target_lang == "hindi":
+            translated_output = translate_tamil_to_hindi(input_text)
+        else:
+            # For other language pairs, use a generic translation function
+            translated_output = translate_text(input_text, source_lang, target_lang)
+        
+        print(f"📝 {target_lang.title()}: {translated_output}")
+        log_conversation("Assistant", translated_output)
+        speak_text(translated_output)
+
+def translate_text(text, source_lang, target_lang):
+    """Generic translation function for multiple language pairs"""
+    try:
+        # Import translation library (you can use Google Translate API or similar)
+        from googletrans import Translator
+        translator = Translator()
+        
+        # Language code mapping
+        lang_codes = {
+            "tamil": "ta",
+            "telugu": "te", 
+            "hindi": "hi",
+            "english": "en"
+        }
+        
+        source_code = lang_codes.get(source_lang, "ta")
+        target_code = lang_codes.get(target_lang, "hi")
+        
+        result = translator.translate(text, src=source_code, dest=target_code)
+        return result.text
+        
+    except Exception as e:
+        print(f"❌ Translation error: {e}")
+        # Fallback to existing function if available
+        if source_lang == "tamil" and target_lang == "hindi":
+            return translate_tamil_to_hindi(text)
+        else:
+            return f"Translation error for {source_lang} to {target_lang}: {text}"
 
 # Process user commands
 def process_command(command):
@@ -368,7 +462,7 @@ def process_command(command):
 
     # If user wants translator mode
     if any(kw in command.lower() for kw in ["translator", "translate", "மொழிபெயர்ப்பு", "tamil to hindi"]):
-        tamil_to_hindi_loop()
+        translation_loop()
         return
 
     # If general task command
@@ -383,7 +477,7 @@ def process_command(command):
 
 # Entry point
 if __name__ == "__main__":
-    welcome_msg = "வணக்கம்! நான் ஜாரா. இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்? கை சைகை, மொழிபெயர்ப்பு, GIF காட்ட, அல்லது பாடல் இசைக்க சொல்லுங்கள்!"
+    welcome_msg = "வணக்கம்! நான் ஜாரா. இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்? கை சைகை, பல மொழி மொழிபெயர்ப்பு (தமிழ், தெலுங்கு, ஹிந்தி, இங்கிலீஷ்), GIF காட்ட, அல்லது பாடல் இசைக்க சொல்லுங்கள்!"
     speak(welcome_msg)
     log_conversation("Assistant", welcome_msg)
     while True:
