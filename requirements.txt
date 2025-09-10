@@ -8,7 +8,7 @@ requests
 streamlit
 streamlit-webrtc
 streamlit-autorefresh
-mediapipe
+mediapipe==0.10.9
 opencv-python
-googletrans
+googletrans==4.0.0-rc1
 gtts
