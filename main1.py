@@ -436,7 +436,7 @@ def process_command(command):
     log_conversation("User", command)
 
     # If gesture command
-    if any(kw in command.lower() for kw in ["gesture", "கை சைகை", "open gesture", "start gesture"]):
+    if any(kw in command.lower() for kw in ["gesture", "கை சைகை", "open gesture", "start gesture", "ஆக்டிவேட் ஜெஸ்சர்", "activate gesture"]):
         open_gesture_window()
         return
 
@@ -446,7 +446,7 @@ def process_command(command):
         return
 
     # If Spotify/music command
-    if any(kw in command.lower() for kw in ["play song", "play music", "spotify", "பாடல் இசை", "இசை இசை", "song play", "music play"]):
+    if any(kw in command.lower() for kw in ["play song", "play music", "spotify", "பாடல் இசை", "இசை இசை", "song play", "music play", "ப்ளே மியூசிக்", "மியூசிக் ப்ளே"]):
         listen_for_song_request()
         return
 
@@ -461,7 +461,7 @@ def process_command(command):
                 return
 
     # If user wants translator mode
-    if any(kw in command.lower() for kw in ["translator", "translate", "மொழிபெயர்ப்பு", "tamil to hindi"]):
+    if any(kw in command.lower() for kw in ["translator", "translate", "மொழிபெயர்ப்பு", "tamil to hindi", "ஆக்டிவேட் டிரான்ஸ்லேட் மோட்", "டிரான்ஸ்லேட்"]):
         translation_loop()
         return
 
@@ -477,7 +477,7 @@ def process_command(command):
 
 # Entry point
 if __name__ == "__main__":
-    welcome_msg = "வணக்கம்! நான் ஜாரா. இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்? கை சைகை, பல மொழி மொழிபெயர்ப்பு (தமிழ், தெலுங்கு, ஹிந்தி, இங்கிலீஷ்), GIF காட்ட, அல்லது பாடல் இசைக்க சொல்லுங்கள்!"
+    welcome_msg = "வணக்கம்! நான் ஜாரா. இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?"
     speak(welcome_msg)
     log_conversation("Assistant", welcome_msg)
     while True:
